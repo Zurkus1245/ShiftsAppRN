@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useMemo, useState} from 'react';
-import {ActivityIndicator, Alert, FlatList, Image, Pressable, RefreshControl, StyleSheet, Text, View} from 'react-native';
+import {ActivityIndicator, Alert, FlatList, Image, Platform, Pressable, RefreshControl, StyleSheet, Text, View} from 'react-native';
 import Geolocation from 'react-native-geolocation-service';
 import {PERMISSIONS, RESULTS, check, request} from 'react-native-permissions';
 import type {NativeStackScreenProps} from '@react-navigation/native-stack';
@@ -17,7 +17,9 @@ export default function ShiftsListScreen({navigation}: Props) {
 
   const requestLocationPermission = useCallback(async () => {
     try {
-      const permission = PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION;
+      const permission = Platform.OS === 'ios' 
+        ? PERMISSIONS.IOS.LOCATION_WHEN_IN_USE 
+        : PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION;
       let status = await check(permission);
       if (status !== RESULTS.GRANTED) {
         status = await request(permission);
